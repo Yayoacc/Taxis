@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_desktop"
+            android:icon="@drawable/ic_desktop"
+            android:title="Escritorio" />
+        <item
+            android:id="@+id/warning"
+            android:icon="@drawable/ic_warning"
+            android:title="Alertas" />
+        <item
+            android:id="@+id/nav_controles"
+            android:icon="@drawable/ic_controls"
+            android:title="Controles" />
+        <item
+            android:id="@+id/nav_account"
+            android:icon="@drawable/ic_account"
+            android:title="Cuenta" />
+    </group>
+
+    <item android:title="SADII">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_shared"
+                android:title="Compartir" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_about"
+                android:title="Acerca de" />
+        </menu>
+    </item>
+
+</menu>

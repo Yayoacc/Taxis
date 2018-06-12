@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/desktop"
+        android:title="Escritorio"/>
+    <item android:id="@+id/warnings"
+        android:title="Alertas"/>
+    <item android:id="@+id/controls"
+        android:title="Controles"/>
+    <item android:id="@+id/account"
+        android:title="Cuenta"/>
+    <item android:id="@+id/settings"
+        android:title="Configuración"/>
+</menu>
