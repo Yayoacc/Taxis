@@ -1,12 +1,16 @@
 package com.developers.yacc.taxis;
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,21 +22,25 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Map extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int MY_PERMISSION_REQUEST_CODE = 7171;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 7172;
-    private Button btnGetCoordinates, btnLocationUpdates;
-    private boolean mRequestingLocationUpdates = false;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -64,6 +72,10 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ip = "208.118.63.49";
+        db = "DB_A3B963_login";
+        un = "DB_A3B963_login_admin";
+        passw = "Thekingof02";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -82,8 +94,8 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
                 createLocationRequest();
             }
         }
-                displayLocation();
-                tooglePeriodicLoctionUpdates();
+        displayLocation();
+        //tooglePeriodicLoctionUpdates();
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -110,21 +122,6 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
             mGoogleApiClient.disconnect();
         super.onStop();
     }
-
-    private void tooglePeriodicLoctionUpdates() {
-        if(!mRequestingLocationUpdates)
-        {
-            mRequestingLocationUpdates = true;
-            startLocationUpdates();
-        }
-        else
-        {
-            mRequestingLocationUpdates = false;
-            stopLocationUpdates();
-        }
-    }
-
-
     private void displayLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -134,14 +131,17 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
         if (mLastLocation != null) {
             double latitude = mLastLocation.getLatitude();
             double longitude = mLastLocation.getLongitude();
+            Lantlong = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(Lantlong));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            mCurrent = mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car))
+                    .position(Lantlong)
+                    .title("Tu"));
             Toast.makeText(getApplicationContext(), latitude+""+longitude, Toast.LENGTH_LONG).show();
-
         } else {
             Toast.makeText(getApplicationContext(), "Couldn't get the location. Make sure location is enable on the device", Toast.LENGTH_LONG).show();
         }
-
     }
-
     private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -192,8 +192,7 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         displayLocation();
-        if(mRequestingLocationUpdates)
-            startLocationUpdates();
+        startLocationUpdates();
     }
 
 
@@ -212,5 +211,61 @@ public class Map extends AppCompatActivity implements OnMapReadyCallback, Google
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         displayLocation();
+        double lat = mLastLocation.getLatitude();
+        double lon = mLastLocation.getLongitude();
+        Lat = Double.toString(lat);
+        Long = Double.toString(lon);
+        Toast.makeText(getApplicationContext(), Lat+", "+Long+"Guardadas en base de Datos", Toast.LENGTH_LONG).show();
+        Update update = new Update();
+        update.execute("");
+    }
+    @SuppressLint("NewApi")
+    public Connection connectionclass(String user, String password, String database, String server) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        Connection connection = null;
+        String ConnectionURL = null;
+        try {
+            Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+            ConnectionURL = "jdbc:jtds:sqlserver://"+server+";database=" + database + ";user=" + user + ";password=" + password + ";";
+            connection = DriverManager.getConnection(ConnectionURL);
+        } catch (SQLException se) {
+            Log.e("error here 1 : ", se.getMessage());
+        } catch (ClassNotFoundException e) {
+            Log.e("error here 2 : ", e.getMessage());
+        } catch (Exception e) {
+            Log.e("error here 3 : ", e.getMessage());
+        }
+        return connection;
+    }
+    public class Update extends AsyncTask<String, String, String> {
+        String z = "";
+        Boolean isSuccess = false;
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected void onPostExecute(String r){
+        }
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                con = connectionclass(un, passw, db, ip);
+                if (con == null) {
+                    z = "Check Your Internet Access!";
+                } else {
+
+                    String query = "UPDATE ubicacion SET latitud = '"+Lat+"', longuitud = '"+Long+"'  WHERE id = 'Yacc_99';";
+                    Statement stmt = con.createStatement();
+                    stmt.executeQuery(query);
+                    con.close();
+                }
+            } catch (Exception ex) {
+                isSuccess = false;
+                z = ex.getMessage();
+            }
+            return z;
+        }
     }
 }
