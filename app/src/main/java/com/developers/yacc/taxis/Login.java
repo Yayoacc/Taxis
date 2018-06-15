@@ -67,38 +67,6 @@ public class Login extends AppCompatActivity {
                 psw = pass.getText().toString();
                 CheckLogin checkLogin = new CheckLogin();// this is the Asynctask, which is used to process in background to reduce load on app process
                 checkLogin.execute("");
-                    /*if (g.equals("Login Successful")){
-                    Intent desk = new Intent(v.getContext(), Desktop.class);
-                    startActivityForResult(desk, 0);
-                    finish();
-                    }
-                    else if(g.equals("Please enter Username and Password")){
-                        if (usr.trim().equalsIgnoreCase("")) {
-                            user.setError("Este campo no puede estar vacio");
-                        } else if (psw.trim().equalsIgnoreCase("")) {
-                            pass.setError("Este campo no puede estar vacio");
-                        }
-                    }
-                    else if(g.equals("Invalid Credentials!")) {
-                        popup.setContentView(R.layout.activity_pop_up);
-                        close = (TextView) popup.findViewById(R.id.close);
-                        cl = (Button) popup.findViewById(R.id.Ok);
-                        close.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                popup.dismiss();
-                            }
-                        });
-                        cl.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                popup.dismiss();
-
-                            }
-                        });
-                        popup.show();
-                    }*/
-
             }
         });
     }
