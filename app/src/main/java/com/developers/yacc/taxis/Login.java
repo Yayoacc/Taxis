@@ -55,10 +55,10 @@ public class Login extends AppCompatActivity {
         pass = (EditText) findViewById(R.id.password);
         popup = new Dialog(this);
         // Declaring Server ip, username, database name and password
-        ip = "208.118.63.49";
-        db = "DB_A3B963_login";
-        un = "DB_A3B963_login_admin";
-        passw = "Thekingof02";
+        ip = "";
+        db = "";
+        un = "";
+        passw = "";
         // Declaring Server ip, username, database name and password
         ouy.setOnClickListener(new View.OnClickListener() {
             @Override
